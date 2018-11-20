@@ -3,6 +3,7 @@
 height="600"></canvas>
 
 <script>
+// Canvas and ball speed and size
 var canvas;
 var canvasContext;
 var ballX = 50;
@@ -10,12 +11,16 @@ var ballY = 50;
 var ballSpeedX = 10;
 var ballSpeedY = 4;
 
+// Starts at 0 for both
+// WINNING_SCORE is 5
 var player1Score = 0;
 var player2Score = 0;
 const WINNING_SCORE = 5;
 
+// Not showingWinScreen in the beginning
 var showingWinScreen = false;
 
+// Paddle size
 var paddle1Y = 250;
 var paddle2Y = 250;
 const PADDLE_THICKNESS = 10;
@@ -41,6 +46,7 @@ const PADDLE_HEIGHT = 100;
 
 window.onload = function () {
 		canvas = document.getElementById('gameCanvas');
+		// 2D
 		canvasContext = canvas.getContext('2d');
 		
 		var framesPerSecond = 30;
@@ -49,8 +55,9 @@ window.onload = function () {
 				drawEverything();
 		}, 1000/framesPerSecond);
 
+		// Listens for the mousedown event
 		canvas.addEventListener('mousedown',handleMouseClick);
-		
+		// Listens for the mousemove event
 		canvas.addEventListener('mousemove',
 				function(evt) {
 					var mousePos = calculateMousePos(evt);
@@ -58,6 +65,8 @@ window.onload = function () {
 				});
 	}
 	
+	// if player1 || or player2 score is equal to WINNING_SCORE
+	// WinScreen is visible
 	function ballReset() {
 		if(player1Score >= WINNING_SCORE ||
 		player2Score >= WINNING_SCORE) {
@@ -69,6 +78,7 @@ window.onload = function () {
 		ballY = canvas.height/2;
 	}
 
+	// AI movement
 	function computerMovement() {
 		var paddle2YCenter = paddle2Y + (PADDLE_HEIGHT/2);
 			if(paddle2YCenter < ballY-35) {
@@ -96,7 +106,8 @@ window.onload = function () {
 								-(paddle1Y+PADDLE_HEIGHT/2);
 						ballSpeedY = deltaY * 0.35;
 			} else {
-					player2Score += 1; // must be BEFORE ballReset();
+					// must be BEFORE ballReset();
+					player2Score += 1; 
 					ballReset();
 			}
 		}
@@ -111,7 +122,8 @@ window.onload = function () {
 						ballSpeedY = deltaY * 0.35;
 
 			} else {
-					player1Score += 1; // must be BEFORE ballReset();
+					// must be BEFORE ballReset();
+					player1Score += 1;
 					ballReset();
 			}
 		}
@@ -124,6 +136,8 @@ window.onload = function () {
 		}
 }
 
+	// draws the net and loops it
+	// for(var i=0;i<canvas.height; i+=40 is a loop
 	function drawNet(){
 		for(var i=0;i<canvas.height; i+=40) {
 				colorRect(canvas.width/2-1,i,2,20,'white');
@@ -133,13 +147,17 @@ window.onload = function () {
 	function drawEverything() {
 		// next line blanks out the screen with black
 		colorRect(0,0,canvas.width,canvas.height,'black');
-
+			
+			// If WinScreen is visible
 			if(showingWinScreen) {
 				canvasContext.fillStyle = 'white';
 
+				// player 1 won
+				// fillText shows the text
 				if(player1Score >= WINNING_SCORE) {
 				canvasContext.fillText("Left Player Won!", 350,200);
-
+						
+				// else if player 2 won
 				} else if(player2Score >= WINNING_SCORE) {
 					canvasContext.fillText("Right Player Won!", 350,200);
 				}
@@ -150,10 +168,10 @@ window.onload = function () {
 		
 		drawNet();
 		
-		// this is left player paddle
+		// this is the left players paddle
 		colorRect(0,paddle1Y,PADDLE_THICKNESS,PADDLE_HEIGHT,'white');
 
-		// this is right computer paddle
+		// this is the AI paddle on the right
 		colorRect(canvas.width-PADDLE_THICKNESS,paddle2Y,PADDLE_THICKNESS,
 		PADDLE_HEIGHT,'white');
 		
@@ -170,7 +188,7 @@ window.onload = function () {
 		canvasContext.arc(centerX, centerY, radius, 0,Math.PI*2, true);
 		canvasContext.fill();
 	}
-
+	
 	function colorRect(leftX,topY, width, height, drawColor) {
 		canvasContext.fillStyle = drawColor;
 		canvasContext.fillRect(leftX,topY, width, height);
